@@ -1,10 +1,9 @@
 const config = require("../config");
 
-const getPatientLoginQry = "SELECT get_patient_login(?, ?)";
+const patientLoginQry = "SELECT get_patient_login(?, ?) as user_id";
 
 function patientLogin([email, password], callback) {
-    // config.db.query(getPatientLoginQry, [email, password], (err, result) => {
-    config.db.query(getPatientLoginQry, [email, password], (err, result) => {
+    config.db.query(patientLoginQry, [email, password], (err, result) => {
 
         if (err) console.log(err);
 

@@ -7,16 +7,16 @@ let patientID = -1
 let accessToken = null
 
 
-Object.prototype.getByIndex = function(index) {
+Object.prototype.getByIndex = function (index) {
     return this[Object.keys(this)[index]];
-  };
+};
 
-function docLogin([email, password]){
+function docLogin([email, password]) {
     dlogin.doctorLogin([email, password], (err, result) => {
         if (err) console.log(err);
         // res.json(result);
         doctorID = result[0].getByIndex(0)
-        const payload = {email:email}
+        const payload = { email: email }
         accessToken = auth.generateAccessToken(payload)
         //res.cookie("jwt", accessToken)
         //res.send()
@@ -24,20 +24,20 @@ function docLogin([email, password]){
     return [doctorID, accessToken]
 }
 
-function paLogin([email, password]){
-    plogin.patientLogin([email, password], (err, result) =>{
+function paLogin([email, password]) {
+    plogin.patientLogin([email, password], (err, result) => {
         if (err) console.log(err);
         // res.json(result);
         patientID = result[0].getByIndex(0)
-        const payload = {email:eamil}
+        const payload = { email: email }
         accessToken = auth.generateAccessToken(payload)
-        res.json({accessToken:accessToken, doctorID:doctorID})
-        //res.cooke("jwt", accessToken)
+        res.json({ accessToken: accessToken, doctorID: doctorID })
+        //res.cookie("jwt", accessToken)
         //res.send()
     });
     return [patientID, accessToken]
 }
 
 
-exports.docLogin=docLogin;
-exports.paLogin=paLogin;
+exports.docLogin = docLogin;
+exports.paLogin = paLogin;

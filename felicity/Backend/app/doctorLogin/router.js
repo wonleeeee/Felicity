@@ -1,16 +1,17 @@
 var login = require("./login_model");
 var router = require("express").Router();
 
-function getLogin(req, res) {
-    // const email = req.body.email;
-    // const password = req.body.password;
+function postDoctorLogin(req, res) {
+    console.log(req.body);
+    const email = req.body.email;
+    const password = req.body.password;
 
-    login.doctorLogin(["p1@gmail.com", "1234"], (err, result) => {
+    login.doctorLogin([email, password], (err, result) => {
         if (err) console.log(err);
         res.json(result);
     })
 }
 
-router.get("/dlogin", getLogin);
+router.post("/dlogin", postDoctorLogin);
 
 module.exports = router;
