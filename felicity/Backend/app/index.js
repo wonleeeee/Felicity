@@ -54,10 +54,31 @@ const io = socket(server, {
 io.on("connection", async socket => {
     console.log(socket.id);
 
+    socket.on("login", (data) => {
+        console.log(data);
+        const userid = data[0];
+        const role = data[1];
+
+        if (role) {
+            const insertPatientSocket = "select felicity.insert_patient_socket(?, ?);";
+            config.db.query(insertPatientSocket, [userid, socket.id], (err, result) => {
+                if (err) console.log(err);
+                console.log(result);
+            });
+        } else {
+            const insertDoctorSocket = "select felicity.insert_doctor_socket(?, ?);";
+            config.db.query(insertDoctorSocket, [userid, socket.id], (err, result) => {
+                if (err) console.log(err);
+                console.log(result);
+            });
+        }
+    })
+
     socket.on("start", (data) => {
         console.log(data)
         const userid = data[0];
         const role = data[1];
+        const socketid = socket.id;
         var otherUserId;
         var otherSocketId;
 
@@ -65,29 +86,33 @@ io.on("connection", async socket => {
         console.log(role);
 
         if (role) {
-            const getDoctorId = "SELECT doctor_id, socket_id FROM felicity.reservation where patient_id = ?";
+            const getDoctorId = "SELECT reservation.doctor_id, doctor_connection.socket_id FROM felicity.reservation join doctor_connection where patient_id = ? order by connected_time desc limit 1";
 
             config.db.query(getDoctorId, userid, (err, result) => {
                 if (err) console.log(err);
 
                 otherUserId = result[0].doctor_id;
                 otherSocketId = result[0].socket_id;
-                console.log(result);
-                console.log(otherUserId);
-                console.log(otherSocketId);
 
+                console.log(result);
             });
         } else {
-            const getPatientId = "SELECT patient_id, socket_id FROM felicity.reservation where doctor_id = ?";
+            const getPatientId = "SELECT reservation.patient_id, patient_connection.socket_id FROM felicity.reservation join patient_connection where doctor_id = ? order by connected_time desc limit 1";
 
             config.db.query(getPatientId, userid, (err, result) => {
                 if (err) console.log(err);
 
                 console.log(result);
+                otherUserId = result[0].doctor_id;
+                otherSocketId = result[0].socket_id;
+
             });
         }
 
-        socket.emit("me", socket.id);
+        // if (otherUserId && !otherSocketId) {
+
+        // }
+        socket.emit("me", ({ socketid, otherUserId, otherSocketId }));
 
     });
 
@@ -111,4 +136,4 @@ io.on("connection", async socket => {
         // console.log(dataURL);
         socket.emit("result", result);
     });
-})
+});
