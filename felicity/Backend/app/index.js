@@ -94,6 +94,10 @@ io.on("connection", async socket => {
                 otherUserId = result[0].doctor_id;
                 otherSocketId = result[0].socket_id;
 
+                socket.emit("me", ({ socketid, otherUserId, otherSocketId }));
+
+                console.log(otherSocketId);
+
                 console.log(result);
             });
         } else {
@@ -102,9 +106,14 @@ io.on("connection", async socket => {
             config.db.query(getPatientId, userid, (err, result) => {
                 if (err) console.log(err);
 
-                console.log(result);
                 otherUserId = result[0].doctor_id;
                 otherSocketId = result[0].socket_id;
+
+                console.log(otherSocketId);
+
+                socket.emit("me", ({ socketid, otherUserId, otherSocketId }));
+
+                console.log(result);
 
             });
         }
@@ -112,7 +121,8 @@ io.on("connection", async socket => {
         // if (otherUserId && !otherSocketId) {
 
         // }
-        socket.emit("me", ({ socketid, otherUserId, otherSocketId }));
+        // console.log(otherSocketId);
+        // socket.emit("me", ({ socketid, otherUserId, otherSocketId }));
 
     });
 
