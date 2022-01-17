@@ -76,8 +76,8 @@ io.on("connection", async socket => {
 
     socket.on("start", (data) => {
         console.log(data)
-        const userid = data[0];
-        const role = data[1];
+        const userid = data.id;
+        const role = data.role;
         const socketid = socket.id;
         var otherUserId;
         var otherSocketId;
@@ -97,6 +97,7 @@ io.on("connection", async socket => {
                 socket.emit("me", ({ socketid, otherUserId, otherSocketId }));
 
                 console.log(otherSocketId);
+                console.log(socketid);
 
                 console.log(result);
             });
@@ -111,7 +112,8 @@ io.on("connection", async socket => {
 
                 console.log(otherSocketId);
 
-                socket.emit("me", ({ socketid, otherUserId, otherSocketId }));
+                socket.emit("me", { socketid, otherUserId, otherSocketId });
+                console.log(socketid);
 
                 console.log(result);
 
